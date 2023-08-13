@@ -17,7 +17,7 @@
     "jsdom": "22.1.0"
   },
   "bin": {
-    "grug_components": "./index.js"
+    "grug-components": "./cli.js"
   },
   "devDependencies": {
     "pretty": "^2.0.0"

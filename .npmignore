@@ -1,4 +1,5 @@
-components
+components/
 test.html
 test.js
 package-lock.json
+src/
