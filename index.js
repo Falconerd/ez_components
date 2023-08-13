@@ -12,7 +12,7 @@ fs.readFile('index.html', 'utf8', function (err, indexData) {
   }
 
   // Replace self-closing custom component tags with equivalent opening and closing tags
-  const modifiedIndexData = indexData.replace(/<(\w+)([^>]*)\/>/g, '<$1$2></$1>');
+  const modifiedIndexData = indexData.replace(/<([\w-]+)([^>]*)\/>/g, '<$1$2></$1>');
 
   // Use JSDOM to parse the modified index file
   const dom = new JSDOM(modifiedIndexData);
