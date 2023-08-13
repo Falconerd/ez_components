@@ -1,5 +1,6 @@
 const fs = require('fs');
 const jsdom = require('jsdom');
+const pretty = require('pretty');
 const { JSDOM } = jsdom;
 
 // Read the index file
@@ -19,8 +20,10 @@ fs.readFile('index.html', 'utf8', function (err, indexData) {
   // Read and replace each custom component
   const processNextComponent = (index) => {
     if (index >= components.length) {
+      // Format the HTML content using pretty
+      const formattedHtml = pretty(dom.serialize());
       // Write the compiled HTML to a new file
-      fs.writeFile('compiled.html', dom.serialize(), function (err) {
+      fs.writeFile('compiled.html', formattedHtml, function (err) {
         if (err) {
           console.error('Error writing compiled file:', err);
           return;
@@ -32,24 +35,24 @@ fs.readFile('index.html', 'utf8', function (err, indexData) {
 
     const component = components[index];
     const tagName = component.tagName.toLowerCase();
+    const childrenContent = component.innerHTML;
 
     // Read the corresponding component file from ./components/ directory
-    fs.readFile(`./components/${tagName}.html`, 'utf8', function (err, componentData) {
+    fs.readFile(`./components/${tagName}.html`, 'utf8', function (err, componentTemplate) {
       if (err) {
         console.error(`Error reading component file: ./components/${tagName}.html`, err);
         processNextComponent(index + 1);
         return;
       }
 
-      // Use JSDOM to parse the component
-      const componentDom = new JSDOM(componentData);
-      let componentTemplate = componentDom.window.document.body.innerHTML;
-
       // Extract and replace attributes
       for (const attr of component.attributes) {
         const variablePattern = new RegExp('\\{' + attr.name + '\\}', 'g');
         componentTemplate = componentTemplate.replace(variablePattern, attr.value);
       }
+
+      // Replace {children} placeholder with the inner HTML content
+      componentTemplate = componentTemplate.replace('{children}', childrenContent);
 
       // Replace the custom component with the real component
       component.outerHTML = componentTemplate;
@@ -60,3 +63,4 @@ fs.readFile('index.html', 'utf8', function (err, indexData) {
 
   processNextComponent(0);
 });
+
