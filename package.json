@@ -1,6 +1,19 @@
 {
-  "devDependencies": {
-    "jsdom": "^22.1.0",
-    "pretty": "^2.0.0"
+  "name": "grug-components",
+  "version": "0.1.0",
+  "description": "Simple reusable components for the grug brained developer.",
+  "main": "index.js",
+  "scripts": {
+    "build": "node index.js"
+  },
+  "keywords": ["html", "components", "grug"],
+  "author": "Dylan Falconer <me@falconerd.com>",
+  "license": "MIT",
+  "dependencies": {
+    "jsdom": "22.1.0",
+    "pretty": "2.0.0"
+  },
+  "bin": {
+    "grug_components": "./index.js"
   }
 }
