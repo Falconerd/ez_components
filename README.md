@@ -1,1 +1,1 @@
-# <ez/> EZ Components
+# \<ez/\> EZ Components
