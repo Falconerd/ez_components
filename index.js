@@ -98,3 +98,60 @@ function processDirectory(dir) {
 processDirectory('src/');
 
 console.timeEnd('Processing Time');
+
+function compileHtml(inputHtml) {
+  const modifiedData = inputHtml.replace(/<([\w-]+)([^>]*)\/>/g, '<$1$2></$1>');
+  const dom = new JSDOM(modifiedData);
+  const document = dom.window.document;
+  const components = Array.from(document.body.getElementsByTagName('*')).filter(element => !standardHtmlTags.includes(element.tagName.toLowerCase()));
+
+  const processNextComponent = (index, callback) => {
+    if (index >= components.length) {
+      const formattedHtml = pretty(dom.serialize());
+      callback(formattedHtml);
+      return;
+    }
+
+    const component = components[index];
+    const tagName = component.tagName.toLowerCase();
+    const childrenContent = component.innerHTML;
+
+    fs.readFile(`./components/${tagName}.html`, 'utf8', function (err, componentTemplate) {
+      if (err) {
+        console.error(`Error reading component file: ./components/${tagName}.html`, err);
+        processNextComponent(index + 1, callback);
+        return;
+      }
+
+      for (const attr of component.attributes) {
+        const variablePattern = new RegExp('\\{' + attr.name + '}', 'g');
+        componentTemplate = componentTemplate.replace(variablePattern, attr.value);
+      }
+
+      componentTemplate = componentTemplate.replace('{children}', childrenContent);
+      component.outerHTML = componentTemplate;
+
+      processNextComponent(index + 1, callback);
+    });
+  };
+
+  processNextComponent(0, processedHtml => {
+    console.log('Compiled HTML:', processedHtml);
+  });
+}
+
+function compileHtmlFromFile(filePath, callback) {
+  fs.readFile(filePath, 'utf8', function (err, fileData) {
+    if (err) {
+      console.error('Error reading file:', filePath, err);
+      callback(null, err);
+      return;
+    }
+
+    compileHtml(fileData, callback);
+  });
+}
+
+// Export the function
+module.exports.compileHtml = compileHtml;
+module.exports.compileHtmlFromFile = compileHtmlFromFile;
