@@ -11,7 +11,7 @@ function compileHtml(inputHtml) {
   
     const processNextComponent = (index) => {
       if (index >= components.length) {
-        return pretty(dom.serialize());
+        return pretty(dom.window.document.body.innerHTML);
       }
   
       const component = components[index];

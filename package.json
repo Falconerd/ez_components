@@ -1,6 +1,6 @@
 {
   "name": "grug-components",
-  "version": "0.1.3",
+  "version": "0.2.1",
   "description": "Simple reusable components for the grug brained developer.",
   "main": "index.js",
   "scripts": {
