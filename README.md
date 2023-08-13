@@ -34,3 +34,8 @@ A preprocessor that uses HTML all the way down. No JSX, no objects, no extra lan
 
 </html>
 ```
+# Usage
+```
+npm i -D grug-components
+npx grug_components
+```
